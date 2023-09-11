@@ -112,9 +112,9 @@ macro_rules! impl_tuple_helper {
                 F: FoldFnMut,
             {
                 let (last, rest) = self.split_last();
-                let init = rest.fold(init, f);
+                let folded = rest.fold(init, f);
 
-                f.call_mut(init, last)
+                f.call_mut(folded, last)
             }
 
             fn rfold<B, F>(self, init: B, f: &mut F) -> Self::RFold<B, F>
@@ -122,9 +122,9 @@ macro_rules! impl_tuple_helper {
                 F: FoldFnMut,
             {
                 let (first, rest) = self.split_first();
-                let init = rest.rfold(init, f);
+                let folded = rest.rfold(init, f);
 
-                f.call_mut(init, first)
+                f.call_mut(folded, first)
             }
         }
     };
@@ -237,8 +237,8 @@ macro_rules! impl_all_traits_helper {
         impl_tuple!($($saved)*);
         impl_splits!($($saved)* $last_index $last_type);
     };
-    ([$($saved:tt)*] $next_index:tt $next_type:ident $($rest:tt)*) => {
-        impl_all_traits_helper!([$($saved)* $next_index $next_type] $($rest)*);
+    ([$($saved:tt)*] $next_index:tt $next_type:ident $($rest:tt)+) => {
+        impl_all_traits_helper!([$($saved)* $next_index $next_type] $($rest)+);
     };
 }
 
