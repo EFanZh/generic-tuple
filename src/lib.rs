@@ -1,9 +1,8 @@
-pub use self::ops::fold::{Fold, FoldFnMut, RFold};
-pub use self::ops::modify::{Append, Prepend, SplitFirst, SplitLast};
+use self::ops::{Append, Fold, FoldFnMut, Prepend, RFold, SplitFirst, SplitLast};
 
-mod ops;
+pub mod ops;
 
-pub trait Tuple: Append + Prepend {
+pub trait Tuple: Append + Prepend + Fold + RFold {
     fn append<T>(self, item: T) -> <Self as Append>::Output<T>
     where
         Self: Sized,
@@ -34,7 +33,7 @@ pub trait Tuple: Append + Prepend {
 
     fn fold<B, F>(self, init: B, mut f: F) -> <Self as Fold>::Output<B, F>
     where
-        Self: Fold + Sized,
+        Self: Sized,
         F: FoldFnMut,
     {
         Fold::fold(self, init, &mut f)
@@ -42,11 +41,11 @@ pub trait Tuple: Append + Prepend {
 
     fn rfold<B, F>(self, init: B, mut f: F) -> <Self as RFold>::Output<B, F>
     where
-        Self: RFold + Sized,
+        Self: Sized,
         F: FoldFnMut,
     {
         RFold::rfold(self, init, &mut f)
     }
 }
 
-impl<T> Tuple for T where T: Append + Prepend {}
+impl<T> Tuple for T where T: Append + Prepend + Fold + RFold {}

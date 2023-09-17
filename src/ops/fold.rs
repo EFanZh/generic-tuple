@@ -34,7 +34,7 @@ where
     T: SplitLast,
     T::Rest: Fold,
 {
-    type Output<B, F> = F::Output<<<T as SplitLast>::Rest as Fold>::Output<B, F>, T::Last>
+    type Output<B, F> = F::Output<<T::Rest as Fold>::Output<B, F>, T::Last>
     where
         F: FoldFnMut;
 
@@ -77,7 +77,7 @@ where
     T: SplitFirst,
     T::Rest: RFold,
 {
-    type Output<B, F> = F::Output<<<T as SplitFirst>::Rest as RFold>::Output<B, F>, T::First>
+    type Output<B, F> = F::Output<<T::Rest as RFold>::Output<B, F>, T::First>
     where
         F: FoldFnMut;
 

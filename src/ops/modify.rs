@@ -1,5 +1,8 @@
+use crate::ops::fold::{Fold, RFold};
+use crate::Tuple;
+
 pub trait Append {
-    type Output<T>: SplitLast<Last = T, Rest = Self>;
+    type Output<T>: SplitLast<Last = T, Rest = Self> + Fold + RFold;
 
     fn append<T>(self, item: T) -> Self::Output<T>;
 }
@@ -13,7 +16,7 @@ impl Append for () {
 }
 
 pub trait Prepend {
-    type Output<T>: SplitFirst<First = T, Rest = Self>;
+    type Output<T>: SplitFirst<First = T, Rest = Self> + Fold + RFold;
 
     fn prepend<T>(self, item: T) -> Self::Output<T>;
 }
@@ -28,14 +31,14 @@ impl Prepend for () {
 
 pub trait SplitFirst {
     type First;
-    type Rest: Prepend<Output<Self::First> = Self>;
+    type Rest: Tuple + Prepend<Output<Self::First> = Self>;
 
     fn split_first(self) -> (Self::First, Self::Rest);
 }
 
 pub trait SplitLast {
     type Last;
-    type Rest: Append<Output<Self::Last> = Self>;
+    type Rest: Tuple + Append<Output<Self::Last> = Self>;
 
     fn split_last(self) -> (Self::Last, Self::Rest);
 }
